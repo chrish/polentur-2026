@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Polentur 2026</title>
+<meta name="description" content="Lommeguide for Polenturen 2026 – Vormedal ungdomsskole. Program dag for dag, regler og praktisk info.">
+<meta name="theme-color" content="#f8f4ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1b1f1a" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚌</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8f4ea;
+    --surface: #fffdf7;
+    --ink: #1c1c1a;
+    --muted: #5d6358;
+    --sage: #98b491;
+    --sage-strong: #5e7d57;
+    --sage-soft: #e3ecdf;
+    --line: #e4dfd2;
+    --warn-bg: #fbf0d3;
+    --warn-ink: #6b5310;
+    --today: #d9892b;
+    --nav-h: 56px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1b1f1a;
+      --surface: #242a23;
+      --ink: #eef0ea;
+      --muted: #a9b1a3;
+      --sage: #7f9d78;
+      --sage-strong: #a9c7a1;
+      --sage-soft: #2f3a2d;
+      --line: #343c32;
+      --warn-bg: #3a331f;
+      --warn-ink: #f1d98f;
+      --today: #f0a24a;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: calc(var(--nav-h) + 12px); -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.5 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  h1, h2, h3 { font-family: "DM Serif Display", Georgia, serif; font-weight: 400; line-height: 1.1; margin: 0; }
+  a { color: var(--sage-strong); }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 0 16px; }
+
+  /* Header */
+  header.hero { padding: 40px 0 28px; }
+  .eyebrow { font-weight: 700; color: var(--sage-strong); letter-spacing: .02em; font-size: 14px; text-transform: uppercase; }
+  .hero h1 { font-size: clamp(40px, 11vw, 64px); margin: 6px 0 10px; }
+  .hero p { margin: 0; color: var(--muted); }
+  .route { margin-top: 14px; font-size: 14px; color: var(--muted); }
+
+  /* Sticky day nav */
+  nav.days {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.days .scroller {
+    display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+    padding: 10px 16px; max-width: 680px; margin: 0 auto; height: var(--nav-h);
+  }
+  nav.days .scroller::-webkit-scrollbar { display: none; }
+  nav.days a {
+    flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-width: 46px; padding: 0 10px; border-radius: 10px;
+    text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+    font-size: 11px; line-height: 1.15;
+  }
+  nav.days a b { font-size: 14px; }
+  nav.days a.info { font-size: 13px; font-weight: 600; }
+  nav.days a.is-today { border-color: var(--today); box-shadow: inset 0 0 0 1px var(--today); }
+  nav.days a.is-active { background: var(--sage); border-color: var(--sage); color: #14170f; }
+
+  /* Sections */
+  section.day, section.info { padding: 28px 0 8px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 20px 18px;
+  }
+  .day-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .day-num { font-size: 13px; font-weight: 700; color: var(--sage-strong); text-transform: uppercase; letter-spacing: .04em; }
+  .day h2 { font-size: 30px; margin: 4px 0 2px; }
+  .day .title { font-weight: 600; margin: 0; }
+  .day .legs { color: var(--muted); font-size: 14px; margin: 2px 0 0; }
+  .badge-today {
+    display: none; font-size: 12px; font-weight: 700; color: #fff; background: var(--today);
+    padding: 3px 9px; border-radius: 999px;
+  }
+  .day.is-today .badge-today { display: inline-block; }
+  .day.is-today .card { border-color: var(--today); box-shadow: 0 0 0 1px var(--today); }
+
+  ul.plan { list-style: none; padding: 0; margin: 16px 0 0; }
+  ul.plan > li { display: grid; grid-template-columns: 28px 1fr; gap: 8px; padding: 8px 0; border-top: 1px dashed var(--line); }
+  ul.plan > li:first-child { border-top: 0; }
+  ul.plan .ic { font-size: 18px; line-height: 1.4; text-align: center; }
+  ul.plan ul { margin: 4px 0 0; padding-left: 18px; color: var(--muted); }
+  ul.plan ul li { margin: 1px 0; }
+  .route a, .legs a { color: inherit; text-decoration-color: var(--sage); text-underline-offset: 2px; }
+  ul.plan a { text-underline-offset: 2px; }
+  a.aux { font-size: .85em; color: var(--muted); }
+  .time { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .pay {
+    display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+    color: var(--warn-ink); background: var(--warn-bg); padding: 1px 7px; border-radius: 6px; margin-left: 4px;
+    vertical-align: 1px;
+  }
+  .stay { font-weight: 600; }
+  .note {
+    margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--sage-soft);
+    font-size: 15px;
+  }
+  .note strong { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--sage-strong); margin-bottom: 2px; }
+
+  /* Info sections */
+  .section-title { font-size: 34px; margin: 12px 0 14px; }
+  .info h3 { font-size: 22px; margin: 0 0 8px; }
+  .info .card + .card { margin-top: 12px; }
+  .info ul { margin: 0; padding-left: 20px; }
+  .info li { margin: 3px 0; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { text-align: center; background: var(--sage-soft); border-radius: 14px; padding: 14px 8px; }
+  .stat b { display: block; font-family: "DM Serif Display", Georgia, serif; font-weight: 400; font-size: 38px; line-height: 1; }
+  .stat span { font-size: 14px; color: var(--muted); }
+  .rule-strong li { font-weight: 600; }
+  .checklist { list-style: none; padding: 0 !important; }
+  .checklist li { padding-left: 28px; position: relative; }
+  .checklist li::before { content: "✓"; position: absolute; left: 4px; color: var(--sage-strong); font-weight: 700; }
+  .lead { font-size: 18px; font-weight: 600; margin: 0 0 8px; }
+  .links a { display: block; padding: 10px 0; border-top: 1px solid var(--line); font-weight: 600; text-decoration: none; }
+  .links a:first-child { border-top: 0; }
+
+  footer { padding: 36px 0 60px; color: var(--muted); font-size: 14px; text-align: center; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero wrap">
+  <div class="eyebrow">Vormedal ungdomsskole</div>
+  <h1>Polentur 2026</h1>
+  <p>Lommeguide: program dag for dag, regler og praktisk info.</p>
+  <p class="route"><a href="https://www.google.com/maps/search/?api=1&amp;query=Vormedal+ungdomsskole" target="_blank" rel="noopener">Vormedal</a> → <a href="https://www.google.com/maps/search/?api=1&amp;query=Rostock" target="_blank" rel="noopener">Rostock</a> → <a href="https://www.google.com/maps/search/?api=1&amp;query=Oswiecim" target="_blank" rel="noopener">Oświęcim</a> → <a href="https://www.google.com/maps/search/?api=1&amp;query=Krakow" target="_blank" rel="noopener">Kraków</a> → <a href="https://www.google.com/maps/search/?api=1&amp;query=Praha" target="_blank" rel="noopener">Praha</a> → <a href="https://www.google.com/maps/search/?api=1&amp;query=Berlin" target="_blank" rel="noopener">Berlin</a> → <a href="https://www.google.com/maps/search/?api=1&amp;query=Kiel" target="_blank" rel="noopener">Kiel</a> → <a href="https://www.google.com/maps/search/?api=1&amp;query=Oslo" target="_blank" rel="noopener">Oslo</a> → <a href="https://www.google.com/maps/search/?api=1&amp;query=Vormedal+ungdomsskole" target="_blank" rel="noopener">Vormedal</a></p>
+</header>
+
+<nav class="days" aria-label="Hopp til dag">
+  <div class="scroller">
+    <!-- DAYNAV -->
+    <a href="#regler" class="info">Regler</a>
+    <a href="#praktisk" class="info">Praktisk</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- PROGRAM -->
+
+  <!-- REGLER -->
+  <section class="info" id="regler">
+    <h2 class="section-title">Regler</h2>
+
+    <div class="card">
+      <p class="lead">Vi skal ta vare på oss selv, hverandre og stedene vi besøker.</p>
+      <h3>Ikke til diskusjon</h3>
+      <ul class="rule-strong">
+        <li>Innetid kl. 22.00 og ro kl. 23.00</li>
+        <li>Alkohol, energidrikk, rusmidler, snus, røyk og vape er ikke tillatt</li>
+        <li>El-sparkesykkel er ikke tillatt</li>
+        <li>Ingen skal gå alene! Minimum 3 sammen.</li>
+        <li>Snapkartet skal være på. De voksne skal vite hvor dere er.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Dette forventer vi av deg</h3>
+      <ul>
+        <li>Møter når du skal</li>
+        <li>Følger beskjeder fra alle voksne</li>
+        <li>Sier fra hvor du er</li>
+        <li>Inkluderer andre</li>
+        <li>Passer på tingene dine</li>
+        <li>Viser respekt</li>
+        <li>Bidrar til god stemning</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Stedene vi besøker</h3>
+      <p style="margin:0 0 6px">Konsentrasjonsleirene er også grav- og minnesteder.</p>
+      <ul>
+        <li>Vær rolig og lytt til guiden</li>
+        <li>Vis respekt</li>
+        <li>Tenk over mobilbruk og selfies</li>
+        <li>Følg regler for fotografering</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Hvis reglene ikke følges</h3>
+      <ul>
+        <li>Mindre eller ingen fritid</li>
+        <li>Tettere oppfølging av en voksen</li>
+        <li>Kontakt med foresatte hjemme</li>
+        <li>Ved alvorlige eller gjentatte brudd kan hjemsendelse bli aktuelt</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PRAKTISK -->
+  <section class="info" id="praktisk">
+    <h2 class="section-title">Praktisk</h2>
+
+    <div class="card">
+      <h3>Slik organiserer vi oss</h3>
+      <div class="stats">
+        <div class="stat"><b>80</b><span>ungdommer</span></div>
+        <div class="stat"><b>31</b><span>voksne</span></div>
+        <div class="stat"><b>🚌 1</b><span>A og C</span></div>
+        <div class="stat"><b>🚌 2</b><span>B og D</span></div>
+      </div>
+      <ul style="margin-top:14px">
+        <li>De voksne er foresatte og frivillige, ansvarlige for 2–3 ungdommer hver</li>
+        <li>Snap/snapkart brukes til kommunikasjon og oversikt</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Rom</h3>
+      <ul>
+        <li>Rommene fordeles av de voksne – 2, 3 eller 4 på rommet, og det rulleres</li>
+        <li>Romfordelingen blir kjent før hver overnatting</li>
+        <li>God orden, oppførsel og ro på rommene</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Mat og penger</h3>
+      <ul>
+        <li>Frokost (nesten) hver dag, og lunsj eller middag hver dag</li>
+        <li>Noen måltider kjøpes selv – se <span class="pay">Betal selv</span> i programmet</li>
+        <li>Ha med drikkeflaske og matboks</li>
+        <li>Bankkort som fungerer i utlandet</li>
+        <li>Litt euro i kontanter</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Bagasje</h3>
+      <p style="margin:0 0 6px"><b>1. Bag (ikke koffert)</b> – klær og det du trenger underveis. Ligger i bussens bagasjerom.</p>
+      <p style="margin:0 0 6px"><b>2. Liten sekk</b> – er med deg på bussen: det du trenger første døgn og siste natt på ferja, pass/ID, medisiner, mobil, lader.</p>
+      <p style="margin:0">Du skal kunne bære bagasjen din selv.</p>
+    </div>
+
+    <div class="card">
+      <h3>Ha alltid med</h3>
+      <ul class="checklist">
+        <li>Pass eller nasjonalt ID-kort</li>
+        <li>Europeisk helsetrygdkort</li>
+        <li>Medisiner (og ev. Schengen-attest)</li>
+        <li>Mobil og lader</li>
+        <li>Bankkort</li>
+      </ul>
+    </div>
+
+    <div class="card links">
+      <a href="https://proxiproxi-my.sharepoint.com/:w:/g/personal/rhonda_klarkompetanse_no/IQABVDnWrrZGQ7mtdC9cwFVxATUWOFTVWffyKc5gOfAkGQw?e=UBQZeJ" target="_blank" rel="noopener">Fullt program (Word) ↗</a>
+      <a href="https://proxiproxi-my.sharepoint.com/:w:/g/personal/rhonda_klarkompetanse_no/IQBuMRTP2mgGSo1cT7l9m8BTAb2l5dUD5a95YyU0lxFbMHU?e=NAaXw2" target="_blank" rel="noopener">Ordensregler (Word) ↗</a>
+      <a href="https://proxiproxi-my.sharepoint.com/:w:/g/personal/rhonda_klarkompetanse_no/IQBXi39YtPBCR4KA6--_GyLjAWxtu8qgk6xup_8r_10Z5xg?e=PeKGPY" target="_blank" rel="noopener">Pakkeliste (Word) ↗</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">Polenkomitéen · Vormedal ungdomsskole · God tur! 🚌</footer>
+
+<script>
+(function () {
+  var TZ = 'Europe/Oslo';
+
+  // Dato i norsk tid som "YYYY-MM-DD". Kan overstyres for testing: ?dato=2026-10-05
+  function todayISO() {
+    var override = new URLSearchParams(location.search).get('dato');
+    if (override && /^\d{4}-\d{2}-\d{2}$/.test(override)) return override;
+    var parts = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+    return parts; // en-CA gir YYYY-MM-DD
+  }
+
+  var today = todayISO();
+  // Avreise er torsdag kveld 1.10 – vis dag 1 da også
+  if (today === '2026-10-01') today = '2026-10-02';
+
+  var section = document.getElementById('d-' + today);
+  var navLink = document.querySelector('nav.days a[data-date="' + today + '"]');
+
+  if (section) {
+    section.classList.add('is-today');
+    if (navLink) navLink.classList.add('is-today');
+
+    // Hopp til dagens dag én gang ved lasting – bare hvis brukeren ikke
+    // allerede har bedt om et annet sted (#anker). Etterpå står man fritt.
+    if (!location.hash) {
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      requestAnimationFrame(function () {
+        section.scrollIntoView({ behavior: 'instant', block: 'start' });
+      });
+    }
+  }
+
+  // Marker hvilken dag som er synlig i navigasjonen, og hold den synlig i chip-raden
+  var links = {};
+  document.querySelectorAll('nav.days a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  var current = null;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var a = links[e.target.id];
+      if (!a || a === current) return;
+      if (current) current.classList.remove('is-active');
+      a.classList.add('is-active');
+      current = a;
+      var s = a.parentElement;
+      s.scrollTo({ left: a.offsetLeft - s.clientWidth / 2 + a.clientWidth / 2, behavior: 'smooth' });
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  document.querySelectorAll('section[id]').forEach(function (s) { io.observe(s); });
+
+  // iPhone/iPad: åpne kartlenker direkte i Google Maps-appen (comgooglemaps://).
+  // Forlater ikke siden appen innen kort tid, antar vi at appen mangler og går til web.
+  // Resultatet huskes, så neste trykk går rett til app eller web.
+  // Android trenger ikke dette – der åpner vanlige Maps-lenker appen direkte.
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS) {
+    var KEY = 'gmaps';
+    var getPref = function () { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
+    var setPref = function (v) { try { localStorage.setItem(KEY, v); } catch (e) {} };
+
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="https://www.google.com/maps/"]');
+      if (!a || getPref() === 'web') return; // vanlig lenke i ny fane
+      var p = new URL(a.href).searchParams;
+      var appUrl;
+      if (p.get('query')) {
+        appUrl = 'comgooglemaps://?q=' + encodeURIComponent(p.get('query'));
+      } else if (p.get('origin') && p.get('destination')) {
+        // Reiserute: stopp underveis legges inn som "+to:" i appens URL-format
+        var stops = (p.get('waypoints') ? p.get('waypoints').split('|') : []).concat(p.get('destination'));
+        appUrl = 'comgooglemaps://?saddr=' + encodeURIComponent(p.get('origin')) +
+          '&daddr=' + stops.map(encodeURIComponent).join('+to:') + '&directionsmode=driving';
+      } else return;
+      e.preventDefault();
+
+      if (getPref() === 'app') { location.href = appUrl; return; }
+
+      var left = false;
+      var onHide = function () { if (document.hidden) { left = true; setPref('app'); } };
+      document.addEventListener('visibilitychange', onHide);
+      window.addEventListener('pagehide', onHide);
+      setTimeout(function () {
+        document.removeEventListener('visibilitychange', onHide);
+        window.removeEventListener('pagehide', onHide);
+        if (left) return;
+        setPref('web');
+        location.href = a.href;
+      }, 2500);
+      location.href = appUrl;
+    });
+  }
+})();
+</script>
+</body>
+</html>
