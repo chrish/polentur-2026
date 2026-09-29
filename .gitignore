@@ -1,0 +1,19 @@
+# Generert av build.mjs (bygges automatisk ved wrangler dev/deploy)
+public/
+
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars*
+!.dev.vars.example
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.pdf
