@@ -1,5 +1,5 @@
 {
-  "name": "polentur",
+  "name": "polentur-2026",
   "compatibility_date": "2026-09-01",
   // Bygger public/index.html fra program/*.md før hver deploy
   "build": { "command": "node build.mjs", "watch_dir": ["program", "src"] },
