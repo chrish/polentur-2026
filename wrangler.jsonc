@@ -1,6 +1,8 @@
 {
   "name": "polentur-2026",
   "compatibility_date": "2026-09-01",
+  // Worker for /api/vaer (værvarsel). Statiske filer serveres uten å gå via denne.
+  "main": "src/worker.js",
   // Bygger public/index.html fra program/*.md før hver deploy
   "build": { "command": "node build.mjs", "watch_dir": ["program", "src"] },
   "assets": { "directory": "./public" }

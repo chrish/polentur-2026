@@ -18,6 +18,9 @@ const inline = (s) =>
     .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
     .replace(/\[([^\]]+)\]/g, '<span class="pay">$1</span>');
 
+// Steder med koordinater og Yr-ID, delt med src/worker.js
+const STEDER = JSON.parse(readFileSync('src/steder.json', 'utf8'));
+
 const EMOJI = /^(\p{Extended_Pictographic}[️‍\p{Extended_Pictographic}]*)\s+/u;
 
 function parse(file) {
@@ -31,6 +34,8 @@ function parse(file) {
     })
   );
   for (const k of ['dato', 'dag', 'tittel']) if (!meta[k]) throw new Error(`${file}: mangler "${k}"`);
+  if (meta['vær'] && !STEDER[meta['vær']])
+    throw new Error(`${file}: ukjent vær-sted "${meta['vær']}" – legg det til i src/steder.json`);
 
   const items = [];
   const notes = [];
@@ -49,6 +54,13 @@ function parse(file) {
   return { meta, items, note: notes.join(' ').trim() };
 }
 
+// Plassholder som fylles med varsel fra /api/vaer når siden lastes
+function renderWeather(place) {
+  if (!place) return '';
+  const href = `https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/${STEDER[place].yr}`;
+  return `<a class="wx" href="${href}" target="_blank" rel="noopener" data-place="${esc(place)}" hidden></a>`;
+}
+
 function renderDay({ meta, items, note }) {
   const li = items
     .map((it) => {
@@ -58,7 +70,7 @@ function renderDay({ meta, items, note }) {
     .join('\n');
   return `  <section class="day" id="d-${meta.dato}" data-date="${meta.dato}">
     <div class="card">
-      <div class="day-head"><span class="day-num">Dag ${esc(meta.dag)}</span><span class="badge-today">I dag</span></div>
+      <div class="day-head"><span class="day-num">Dag ${esc(meta.dag)}</span>${renderWeather(meta['vær'])}<span class="badge-today">I dag</span></div>
       <h2>${esc(meta.tittel)}</h2>
 ${meta.undertittel ? `      <p class="title">${esc(meta.undertittel)}</p>\n` : ''}${meta.rute ? `      <p class="legs">${inline(meta.rute)}</p>\n` : ''}      <ul class="plan">
 ${li}

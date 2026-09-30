@@ -131,6 +131,13 @@
     padding: 3px 9px; border-radius: 999px;
   }
   .day.is-today .badge-today { display: inline-block; }
+  .wx {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 4px;
+    font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; font-variant-numeric: tabular-nums;
+  }
+  .wx[hidden] { display: none; }
+  .wx img { width: 26px; height: 26px; }
+  .wx .wind { font-weight: 400; }
   .day.is-today .card { border-color: var(--today); box-shadow: 0 0 0 1px var(--today); }
 
   ul.plan { list-style: none; padding: 0; margin: 16px 0 0; }
@@ -323,6 +330,7 @@
 
 <footer class="wrap">
   <p>Spørsmål om guiden eller feil i programmet?<br>Kontakt polen@chha.no</p>
+  <p>Værvarsel fra <a href="https://www.yr.no/" target="_blank" rel="noopener">Yr</a>, levert av MET Norway. Viser varselet for ca. kl. 12 den aktuelle dagen.</p>
   <p>Vi tar forbehold om endringer i programmet, blant annet tidspunkter, hoteller, buss og ferje.<br>Endringer legges ut under «Endringer» i dagslisten.</p>
 </footer>
 
@@ -376,6 +384,29 @@
     });
   }, { rootMargin: '-40% 0px -55% 0px' });
   document.querySelectorAll('section[id]').forEach(function (s) { io.observe(s); });
+
+  // Værvarsel for hver dag (ca. kl. 12 den dagen), hentet fra /api/vaer ved sidelasting.
+  // Dager som ligger utenfor varselperioden (ca. 10 dager) forblir skjult.
+  var wx = document.querySelectorAll('.wx[data-place]');
+  if (wx.length && window.fetch) {
+    var places = [];
+    wx.forEach(function (el) { var p = el.getAttribute('data-place'); if (places.indexOf(p) < 0) places.push(p); });
+    fetch('/api/vaer?steder=' + encodeURIComponent(places.join(',')))
+      .then(function (r) { return r.ok ? r.json() : {}; })
+      .then(function (data) {
+        wx.forEach(function (el) {
+          var date = el.closest('.day').getAttribute('data-date');
+          var f = (data[el.getAttribute('data-place')] || {})[date];
+          if (!f) return;
+          el.innerHTML = '<img alt="" src="https://cdn.jsdelivr.net/gh/metno/weathericons@main/weather/svg/' + f.symbol + '.svg">' +
+            '<span>' + f.temp + '°</span><span class="wind">' + f.wind + ' m/s</span>';
+          el.title = 'Værvarsel for ' + el.getAttribute('data-place') + ' ca. kl. 12 – åpne på Yr';
+          el.setAttribute('aria-label', el.title + ': ' + f.temp + ' grader, vind ' + f.wind + ' meter per sekund');
+          el.hidden = false;
+        });
+      })
+      .catch(function () {});
+  }
 
   // Endringer-knappen: gløder til siste endring er sett, åpner/lukker panelet
   var ubtn = document.querySelector('.updates-btn');
