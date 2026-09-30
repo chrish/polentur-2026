@@ -27,9 +27,18 @@ async function forecast(name) {
   return days;
 }
 
-// Én verdi per dato: tidspunktet nærmest kl. 12 som har værsymbol
+// Én verdi per dato: tidspunktet nærmest kl. 12 som har værsymbol, pluss nedbør for hele døgnet
 function summarize(timeseries) {
   const best = {};
+  const rain = {}; // dato → { mm, blocks } fra 6-timersperiodene 00, 06, 12 og 18 UTC
+  for (const { time, data } of timeseries) {
+    const mm = data.next_6_hours?.details.precipitation_amount;
+    if (mm != null && Number(time.slice(11, 13)) % 6 === 0) {
+      const r = (rain[time.slice(0, 10)] ??= { mm: 0, blocks: 0 });
+      r.mm += mm;
+      r.blocks++;
+    }
+  }
   for (const { time, data } of timeseries) {
     const symbol = (data.next_1_hours || data.next_6_hours || data.next_12_hours)?.summary.symbol_code;
     if (!symbol) continue;
@@ -38,6 +47,8 @@ function summarize(timeseries) {
     if (best[date] && best[date].dist <= dist) continue;
     const d = data.instant.details;
     best[date] = { dist, symbol, temp: Math.round(d.air_temperature), wind: Math.round(d.wind_speed) };
+    // Bare hele døgn – siste dag i varselet er ofte ufullstendig
+    if (rain[date]?.blocks === 4) best[date].mm = Math.round(rain[date].mm * 10) / 10;
   }
   return Object.fromEntries(Object.entries(best).map(([date, { dist, ...v }]) => [date, v]));
 }

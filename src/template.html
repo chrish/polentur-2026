@@ -138,6 +138,8 @@
   .wx[hidden] { display: none; }
   .wx img { width: 26px; height: 26px; }
   .wx .wind { font-weight: 400; }
+  .wx .rain { font-weight: 400; color: #3b82c4; }
+  @media (prefers-color-scheme: dark) { .wx .rain { color: #7fb6ea; } }
   .day.is-today .card { border-color: var(--today); box-shadow: 0 0 0 1px var(--today); }
 
   ul.plan { list-style: none; padding: 0; margin: 16px 0 0; }
@@ -330,7 +332,7 @@
 
 <footer class="wrap">
   <p>Spørsmål om guiden eller feil i programmet?<br>Kontakt polen@chha.no</p>
-  <p>Værvarsel fra <a href="https://www.yr.no/" target="_blank" rel="noopener">Yr</a>, levert av MET Norway. Viser varselet for ca. kl. 12 den aktuelle dagen.</p>
+  <p>Værvarsel fra <a href="https://www.yr.no/" target="_blank" rel="noopener">Yr</a>, levert av MET Norway. Viser varselet for ca. kl. 12 og samlet nedbør for den aktuelle dagen.</p>
   <p>Vi tar forbehold om endringer i programmet, blant annet tidspunkter, hoteller, buss og ferje.<br>Endringer legges ut under «Endringer» i dagslisten.</p>
 </footer>
 
@@ -398,10 +400,13 @@
           var date = el.closest('.day').getAttribute('data-date');
           var f = (data[el.getAttribute('data-place')] || {})[date];
           if (!f) return;
+          var mm = f.mm ? String(f.mm).replace('.', ',') : '';
           el.innerHTML = '<img alt="" src="https://cdn.jsdelivr.net/gh/metno/weathericons@main/weather/svg/' + f.symbol + '.svg">' +
-            '<span>' + f.temp + '°</span><span class="wind">' + f.wind + ' m/s</span>';
-          el.title = 'Værvarsel for ' + el.getAttribute('data-place') + ' ca. kl. 12 – åpne på Yr';
-          el.setAttribute('aria-label', el.title + ': ' + f.temp + ' grader, vind ' + f.wind + ' meter per sekund');
+            '<span>' + f.temp + '°</span>' + (mm ? '<span class="rain">' + mm + ' mm</span>' : '') +
+            '<span class="wind">' + f.wind + ' m/s</span>';
+          el.title = 'Værvarsel for ' + el.getAttribute('data-place') + ' ca. kl. 12, nedbør for hele dagen – åpne på Yr';
+          el.setAttribute('aria-label', el.title + ': ' + f.temp + ' grader' + (mm ? ', ' + mm + ' millimeter nedbør' : '') +
+            ', vind ' + f.wind + ' meter per sekund');
           el.hidden = false;
         });
       })
