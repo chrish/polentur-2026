@@ -1,4 +1,4 @@
-// Bygger public/index.html fra src/template.html + program/*.md
+// Bygger public/index.html fra src/template.html + program/*.md + oppdateringer.md
 // Kjør: node build.mjs
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs';
 
@@ -78,7 +78,24 @@ const days = readdirSync('program')
   .sort()
   .map(parse);
 
+// Oppdateringer: "- DD.MM: tekst", nyeste først. Linjer som starter med # ignoreres.
+const updates = readFileSync('oppdateringer.md', 'utf8')
+  .split('\n')
+  .filter((l) => /^- /.test(l))
+  .map((l) => l.slice(2).trim());
+
+function renderUpdates() {
+  if (!updates.length) return '';
+  const latest = updates[0].match(/^(\d{1,2}\.\d{1,2})/);
+  return `<details class="updates">
+  <summary>📢 Oppdatert${latest ? ` ${latest[1]}` : ''} – trykk for endringer</summary>
+  <ul>${updates.map((u) => `<li>${inline(u)}</li>`).join('')}</ul>
+</details>
+`;
+}
+
 const html = readFileSync('src/template.html', 'utf8')
+  .replace('<!-- UPDATES -->\n', renderUpdates())
   .replace('    <!-- DAYNAV -->\n', days.map(renderNav).join(''))
   .replace('  <!-- PROGRAM -->\n', days.map(renderDay).join('\n'));
 
