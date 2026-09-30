@@ -1,6 +1,7 @@
 // Bygger public/index.html fra src/template.html + program/*.md + oppdateringer.md
 // Kjør: node build.mjs
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 
 const WEEKDAYS = ['søn', 'man', 'tir', 'ons', 'tor', 'fre', 'lør'];
 
@@ -86,11 +87,13 @@ const updates = readFileSync('oppdateringer.md', 'utf8')
 
 function renderUpdates() {
   if (!updates.length) return '';
-  const latest = updates[0].match(/^(\d{1,2}\.\d{1,2})/);
-  return `<details class="updates">
-  <summary>📢 Oppdatert${latest ? ` ${latest[1]}` : ''} – trykk for endringer</summary>
-  <ul>${updates.map((u) => `<li>${inline(u)}</li>`).join('')}</ul>
-</details>
+  // Signatur av innholdet: knappen gløder igjen når listen endres
+  const sig = createHash('sha1').update(updates.join('\n')).digest('hex').slice(0, 10);
+  return `    <button type="button" class="updates-btn" aria-expanded="false" aria-controls="updates-panel" data-sig="${sig}">Endringer</button>
+    <div class="updates-panel" id="updates-panel" hidden>
+      <h3>Endringer</h3>
+      <ul>${updates.map((u) => `<li>${inline(u)}</li>`).join('')}</ul>
+    </div>
 `;
 }
 
