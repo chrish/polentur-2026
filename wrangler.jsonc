@@ -5,5 +5,7 @@
   "main": "src/worker.js",
   // Bygger public/index.html fra program/*.md før hver deploy
   "build": { "command": "node build.mjs", "watch_dir": ["program", "src"] },
-  "assets": { "directory": "./public" }
+  "assets": { "directory": "./public" },
+  // Kreves av `wrangler preview` (forhåndsvisning av grener/PR-er)
+  "previews": {}
 }
