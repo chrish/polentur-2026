@@ -1,6 +1,8 @@
 # Vises bak «Endringer»-knappen helt til høyre i dagslisten. Knappen gløder til man har åpnet den.
 # Én linje per endring, nyeste først: "- DD.MM: tekst". Ingen linjer = ingen knapp.
 
+- 4.10: Middag mandag 5. oktober er flyttet til 18.15.
+
 - 03.10: Søndag 4. oktober: Oppdatert info om besøket i Auschwitz.
 
 - 03.10: Søndag 4. oktober: Sjekk ut av hotellet og pakk bagasjen inn i bussen før vi drar til Auschwitz.
